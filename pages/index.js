@@ -35,6 +35,7 @@ const bodyHTML = `<!-- CURSOR -->
     <li><a href="#gallery">Gallery</a></li>
     <li><a href="#academy">Academy</a></li>
     <li><a href="#gift-shop">Shop</a></li>
+    <li><a href="#menu">Menu</a></li>
     <li><a href="#book" class="nav-cta">Book Didi</a></li>
   </ul>
 
@@ -284,6 +285,71 @@ const bodyHTML = `<!-- CURSOR -->
   <div class="gallery-cta-bar">
     <span class="gcta-text">Every image in our gallery is available as a premium download for event planners, bloggers & brands.</span>
     <a href="#" class="gcta-link">Access Content Vault</a>
+  </div>
+</section>
+
+<!-- ══════════════ MENU ══════════════ -->
+<section id="menu">
+  <div class="section-header reveal">
+    <div class="label">Sample Menu</div>
+    <h2 class="section-title">A Taste of What We Do</h2>
+    <div class="section-rule"></div>
+    <p class="section-sub">Curated menus crafted with intention. Starting from <strong>₦250,000</strong> — tailored to your event.</p>
+  </div>
+
+  <div class="menu-grid">
+
+    <div class="menu-course reveal">
+      <div class="menu-course-label">Canapés &amp; Starters</div>
+      <div class="menu-items">
+        <div class="menu-item">
+          <div class="menu-item-name">Chicken Croquettes</div>
+          <div class="menu-item-desc">Golden, crispy chicken croquettes served with a house dip.</div>
+        </div>
+        <div class="menu-item">
+          <div class="menu-item-name">Short Rib Tacos</div>
+          <div class="menu-item-desc">Tender slow-cooked short ribs tucked into soft tacos with fresh toppings.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="menu-course reveal">
+      <div class="menu-course-label">Main Course</div>
+      <div class="menu-items">
+        <div class="menu-item">
+          <div class="menu-item-name">Lamb Chops &amp; Creamy Mash</div>
+          <div class="menu-item-desc">Perfectly seasoned lamb chops served with smooth, buttery mashed potatoes.</div>
+        </div>
+        <div class="menu-item">
+          <div class="menu-item-name">Jollof Rice, Grilled Chicken &amp; Sweet Plantain</div>
+          <div class="menu-item-desc">A refined take on a beloved classic — smoky jollof rice paired with juicy grilled chicken and caramelized plantain.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="menu-course reveal">
+      <div class="menu-course-label">Dessert Selection</div>
+      <div class="menu-items">
+        <div class="menu-item">
+          <div class="menu-item-name">Puff Puff with Caramel Drizzle</div>
+          <div class="menu-item-desc">Soft, fluffy puff puff finished with a rich caramel drizzle.</div>
+        </div>
+        <div class="menu-item">
+          <div class="menu-item-name">Chin Chin Cheesecake</div>
+          <div class="menu-item-desc">Creamy cheesecake infused with nostalgic chin chin flavors.</div>
+        </div>
+        <div class="menu-item">
+          <div class="menu-item-name">Warm Brownie &amp; Vanilla Ice Cream</div>
+          <div class="menu-item-desc">Rich chocolate brownie served with smooth vanilla ice cream.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="menu-cta reveal">
+    <p>Every menu is personalised — we work with you to create something extraordinary.</p>
+    <a href="#book" class="menu-book-btn">Book &amp; Discuss Your Menu</a>
   </div>
 </section>
 

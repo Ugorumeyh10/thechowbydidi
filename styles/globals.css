@@ -1409,6 +1409,115 @@ footer {
 }
 
 /* ─────────────────────────────────────
+   MENU SECTION
+───────────────────────────────────── */
+#menu {
+  padding: 100px 80px;
+  background: #0d0d0d;
+  color: #f5f0e8;
+}
+
+#menu .section-header {
+  text-align: center;
+  margin-bottom: 64px;
+}
+
+#menu .section-sub {
+  color: rgba(245,240,232,0.65);
+  font-size: 16px;
+  margin-top: 16px;
+  font-family: 'Georgia', serif;
+  font-style: italic;
+}
+
+#menu .section-sub strong {
+  color: #e24b4a;
+  font-style: normal;
+}
+
+.menu-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 40px;
+  max-width: 1200px;
+  margin: 0 auto 64px;
+}
+
+.menu-course {
+  border: 1px solid rgba(226,75,74,0.2);
+  border-radius: 2px;
+  padding: 36px 32px;
+  background: rgba(255,255,255,0.03);
+  transition: border-color 0.3s;
+}
+
+.menu-course:hover {
+  border-color: rgba(226,75,74,0.5);
+}
+
+.menu-course-label {
+  font-size: 11px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: #e24b4a;
+  font-family: 'Georgia', serif;
+  margin-bottom: 28px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid rgba(226,75,74,0.2);
+}
+
+.menu-items {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.menu-item-name {
+  font-family: 'Georgia', serif;
+  font-size: 17px;
+  font-style: italic;
+  color: #f5f0e8;
+  margin-bottom: 6px;
+}
+
+.menu-item-desc {
+  font-size: 13px;
+  color: rgba(245,240,232,0.55);
+  line-height: 1.7;
+}
+
+.menu-cta {
+  text-align: center;
+  max-width: 560px;
+  margin: 0 auto;
+}
+
+.menu-cta p {
+  color: rgba(245,240,232,0.6);
+  font-style: italic;
+  font-family: 'Georgia', serif;
+  font-size: 15px;
+  margin-bottom: 28px;
+}
+
+.menu-book-btn {
+  display: inline-block;
+  padding: 16px 40px;
+  background: #e24b4a;
+  color: #fff;
+  text-decoration: none;
+  font-size: 12px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  transition: background 0.3s, transform 0.3s;
+}
+
+.menu-book-btn:hover {
+  background: #c9a84c;
+  transform: translateY(-2px);
+}
+
+/* ─────────────────────────────────────
    RESPONSIVE
 ───────────────────────────────────── */
 @media (max-width: 900px) {
@@ -1454,5 +1563,7 @@ footer {
   .footer-top { grid-template-columns: 1fr 1fr; gap: 32px; }
   .footer-bottom { flex-direction: column; gap: 12px; text-align: center; }
   .section-title { font-size: 38px; }
+  #menu { padding: 80px 24px; }
+  .menu-grid { grid-template-columns: 1fr; gap: 24px; }
 }
 
