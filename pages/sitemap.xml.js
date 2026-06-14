@@ -1,9 +1,9 @@
 // Serves /sitemap.xml. Set NEXT_PUBLIC_SITE_URL to your canonical domain.
 
-const SECTIONS = ['', '#services', '#menu', '#private-dining', '#gift-shop', '#academy', '#book']
+const PATHS = ['', 'about', 'services', 'menu', 'gallery', 'academy', 'book']
 
 function generate(base) {
-  const urls = SECTIONS.map((s) => `  <url><loc>${base}/${s}</loc></url>`).join('\n')
+  const urls = PATHS.map((s) => `  <url><loc>${base}/${s}</loc></url>`).join('\n')
   return `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${urls}
