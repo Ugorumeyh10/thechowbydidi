@@ -1,6 +1,6 @@
 // Serves /sitemap.xml. Set NEXT_PUBLIC_SITE_URL to your canonical domain.
 
-const PATHS = ['', 'about', 'services', 'menu', 'gallery', 'academy', 'book']
+const PATHS = ['', 'about', 'services', 'menu', 'gallery', 'ebooks', 'academy', 'book']
 
 function generate(base) {
   const urls = PATHS.map((s) => `  <url><loc>${base}/${s}</loc></url>`).join('\n')

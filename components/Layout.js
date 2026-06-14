@@ -16,7 +16,8 @@ const TABS = [
 
 const NAV = [
   ['/', 'Home'], ['/about', 'About'], ['/services', 'Services'],
-  ['/menu', 'Menu'], ['/gallery', 'Gallery'], ['/academy', 'Academy'], ['/book', 'Book'],
+  ['/menu', 'Menu'], ['/gallery', 'Gallery'], ['/ebooks', 'E-Books'],
+  ['/academy', 'Academy'], ['/book', 'Book'],
 ]
 
 export default function Layout({ children }) {

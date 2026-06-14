@@ -6,3 +6,6 @@ node_modules/
 *.log
 .data/
 .DS_Store
+ebooks_private/
+_review/
+build_book.py
