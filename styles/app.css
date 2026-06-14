@@ -243,3 +243,79 @@ img, video { max-width: 100%; display: block; }
   .foot__cols { grid-template-columns: 2fr 1fr 1fr; }
   .page { padding: 32px 24px 56px; }
 }
+
+/* ───────────────────────────────────────────────────────────────────────────
+   Animations & effects
+   ─────────────────────────────────────────────────────────────────────────── */
+@keyframes fadeUp { from { opacity: 0; transform: translateY(26px); } to { opacity: 1; transform: none; } }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes scaleIn { from { opacity: 0; transform: scale(0.96); } to { opacity: 1; transform: none; } }
+@keyframes floaty { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+@keyframes pulseRing { 0% { box-shadow: 0 0 0 0 rgba(37,211,102,0.45); } 70% { box-shadow: 0 0 0 14px rgba(37,211,102,0); } 100% { box-shadow: 0 0 0 0 rgba(37,211,102,0); } }
+@keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+
+/* Scroll reveal — active only once .app has .reveal-on (added on mount) */
+.reveal-on .section { opacity: 0; transform: translateY(26px); transition: opacity .7s cubic-bezier(.2,.7,.2,1), transform .7s cubic-bezier(.2,.7,.2,1); will-change: opacity, transform; }
+.reveal-on .section.in { opacity: 1; transform: none; }
+/* stagger children of a revealed grid */
+.reveal-on .section.in .tile,
+.reveal-on .section.in .chip { animation: fadeUp .6s both; }
+.reveal-on .section.in .tile:nth-child(2), .reveal-on .section.in .chip:nth-child(2) { animation-delay: .07s; }
+.reveal-on .section.in .tile:nth-child(3), .reveal-on .section.in .chip:nth-child(3) { animation-delay: .14s; }
+.reveal-on .section.in .tile:nth-child(4), .reveal-on .section.in .chip:nth-child(4) { animation-delay: .21s; }
+
+/* Hero entrance (plays on every page load / client nav) */
+.hero { animation: scaleIn .8s both; }
+.hero__overlay .eyebrow { animation: fadeUp .6s .15s both; }
+.hero__title { animation: fadeUp .7s .28s both; }
+.hero__sub { animation: fadeUp .7s .42s both; }
+.hero__btns { animation: fadeUp .7s .55s both; }
+.hero__media { transform: scale(1.05); animation: heroZoom 9s ease-out forwards; }
+@keyframes heroZoom { to { transform: scale(1); } }
+
+/* Page heading entrance */
+.page > .center:first-child .h1,
+.page > .center:first-child .eyebrow { animation: fadeUp .6s both; }
+
+/* Card / tile hover lift + image zoom */
+.tile, .chip, .card { transition: transform .3s cubic-bezier(.2,.7,.2,1), box-shadow .3s; }
+.tile { overflow: hidden; }
+.tile__img { transition: transform .6s cubic-bezier(.2,.7,.2,1); }
+@media (hover: hover) {
+  .tile:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); }
+  .tile:hover .tile__img { transform: scale(1.07); }
+  .chip:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+  .gallery > *:hover img { transform: scale(1.06); }
+  .appbar__cta:hover { transform: translateY(-1px) scale(1.03); }
+  .stat__n { transition: transform .3s; }
+  .stat:hover .stat__n { transform: scale(1.1); }
+}
+.gallery > * img { transition: transform .6s cubic-bezier(.2,.7,.2,1); }
+
+/* Button sheen */
+.btn { position: relative; overflow: hidden; }
+.btn::after {
+  content: ''; position: absolute; top: 0; left: -120%; width: 60%; height: 100%;
+  background: linear-gradient(120deg, transparent, rgba(255,255,255,0.35), transparent);
+  transform: skewX(-20deg); transition: left .6s;
+}
+.btn:hover::after { left: 140%; }
+
+/* Tab bar active pop */
+.tabbar__item svg { transition: transform .25s cubic-bezier(.2,.7,.2,1); }
+.tabbar__item.active svg { transform: translateY(-2px) scale(1.12); }
+.tabbar__dot { transition: opacity .25s; }
+
+/* Floating WhatsApp pulse */
+.fab-wa { animation: floaty 3.5s ease-in-out infinite; }
+.fab-wa::before { content: ''; position: absolute; inset: 0; border-radius: 50%; animation: pulseRing 2.6s infinite; }
+
+/* Rule grow on reveal */
+.section.in .rule { animation: ruleGrow .6s .2s both; }
+@keyframes ruleGrow { from { width: 0; } to { width: 54px; } }
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  .reveal-on .section { opacity: 1 !important; transform: none !important; }
+}

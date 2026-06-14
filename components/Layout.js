@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 const WA = (process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '2347036791385').replace(/[^0-9]/g, '')
 export const waLink = (msg) =>
@@ -23,8 +23,21 @@ export default function Layout({ children }) {
   const { pathname } = useRouter()
   const isActive = (href) => (href === '/' ? pathname === '/' : pathname.startsWith(href))
 
+  // Reveal-on-scroll: fade/slide sections in as they enter the viewport.
+  useEffect(() => {
+    const els = Array.from(document.querySelectorAll('.section'))
+    if (!('IntersectionObserver' in window)) { els.forEach((el) => el.classList.add('in')); return }
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target) }
+      })
+    }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' })
+    els.forEach((el) => io.observe(el))
+    return () => io.disconnect()
+  }, [pathname])
+
   return (
-    <div className="app">
+    <div className="app reveal-on">
       <header className="appbar">
         <Link href="/" className="appbar__brand">
           <span className="appbar__logo">Chowby Didi Haus</span>
