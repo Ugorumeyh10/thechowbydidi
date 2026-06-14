@@ -1,13 +1,29 @@
 // POST /api/enquiry
-// Receives booking form submissions, stores them, sends confirmation email
+// Receives booking form submissions, stores them, sends confirmation email.
+// Also handles academy enrolments and gift-voucher requests via `type`.
+
+import { saveEnquiry } from '../../lib/db'
+import { sendMail, emailConfigured } from '../../lib/mailer'
+import { notifyTeam } from '../../lib/notify'
+import { getClientIp, rateLimited, isBot } from '../../lib/security'
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' })
   }
 
+  // Spam protection: honeypot + per-IP rate limit
+  if (isBot(req.body)) {
+    return res.status(200).json({ success: true, id: 'ENQ-ignored' }) // silently drop bots
+  }
+  if (rateLimited(`enquiry:${getClientIp(req)}`, { max: 5, windowMs: 60_000 })) {
+    return res.status(429).json({ error: 'Too many requests. Please try again shortly.' })
+  }
+
   const {
+    type,
     name,
+    email,
     phone,
     service,
     date,
@@ -21,10 +37,15 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Name, phone and service are required' })
   }
 
+  const kind = ['enquiry', 'academy', 'voucher'].includes(type) ? type : 'enquiry'
+  const prefix = kind === 'academy' ? 'ACA' : kind === 'voucher' ? 'GVC' : 'ENQ'
+
   const enquiryData = {
-    id: `ENQ-${Date.now()}`,
+    id: `${prefix}-${Date.now()}`,
     timestamp: new Date().toISOString(),
+    type: kind,
     name,
+    email: email || '',
     phone,
     service,
     date: date || 'TBD',
@@ -35,14 +56,16 @@ export default async function handler(req, res) {
   }
 
   try {
-    // ── If Resend API key is configured, send email notification to Didi
-    if (process.env.RESEND_API_KEY) {
-      const { Resend } = await import('resend')
-      const resend = new Resend(process.env.RESEND_API_KEY)
+    // ── Persist the enquiry (Postgres if DATABASE_URL set, else local file)
+    await saveEnquiry(enquiryData)
 
+    // ── Alert the team (Slack / WhatsApp Cloud API — no-op if unconfigured)
+    notifyTeam(`🍽️ New ${kind} — ${name} · ${service} · ${phone}${email ? ' · ' + email : ''} (ref ${enquiryData.id})`)
+
+    // ── Email notifications (Gmail SMTP or Resend — no-op if neither set)
+    if (emailConfigured()) {
       // Notify Didi
-      await resend.emails.send({
-        from: 'Chowby Didi Haus <hello@chowbydidihaus.com>',
+      await sendMail({
         to: process.env.DIDI_EMAIL || 'chef@chowbydidihaus.com',
         subject: `New Enquiry: ${service} — ${name}`,
         html: `
@@ -66,10 +89,12 @@ export default async function handler(req, res) {
         `
       })
 
-      // Send confirmation to client
-      await resend.emails.send({
-        from: 'Chef Didi <hello@chowbydidihaus.com>',
-        to: phone.includes('@') ? phone : process.env.DIDI_EMAIL,
+      // Send confirmation to client — only if they gave us an email address.
+      // (Falls back to the email embedded in the phone field for older clients.)
+      const clientEmail = email || (phone.includes('@') ? phone : null)
+      if (clientEmail) {
+      await sendMail({
+        to: clientEmail,
         subject: `We received your enquiry — ${enquiryData.id}`,
         html: `
           <div style="font-family:Georgia,serif;max-width:600px;margin:0 auto;padding:32px;background:#f7f4f0;color:#1a1a1a;">
@@ -82,6 +107,7 @@ export default async function handler(req, res) {
           </div>
         `
       })
+      }
     }
 
     return res.status(200).json({

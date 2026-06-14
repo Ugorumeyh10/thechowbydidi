@@ -11,6 +11,29 @@ export default function Home() {
         <meta property="og:description" content="Made to Hit Different. Luxury canapés, private dining, and event setups — Lagos to the world." />
         <meta property="og:type" content="website" />
         <link rel="icon" href="/favicon.ico" />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'FoodEstablishment',
+              name: 'Chowby Didi Haus',
+              description:
+                'Elevated food experiences through luxury canapés, curated private dining, event setups and celebration boxes — Lagos to the world.',
+              servesCuisine: ['Nigerian', 'Continental', 'Canapés'],
+              areaServed: 'Lagos, Nigeria',
+              address: { '@type': 'PostalAddress', addressLocality: 'Lagos', addressCountry: 'NG' },
+              email: 'hello@chowbydidihaus.com',
+              priceRange: '₦₦₦',
+              makesOffer: [
+                { '@type': 'Offer', name: 'Private Dining', price: '300000', priceCurrency: 'NGN' },
+                { '@type': 'Offer', name: 'Canapés & Cocktail Catering', price: '250000', priceCurrency: 'NGN' },
+                { '@type': 'Offer', name: 'Event Setup & Tablescape', price: '300000', priceCurrency: 'NGN' },
+                { '@type': 'Offer', name: 'Celebration Boxes', price: '80000', priceCurrency: 'NGN' },
+              ],
+            }),
+          }}
+        />
       </Head>
       <div dangerouslySetInnerHTML={{ __html: bodyHTML }} />
     </>
@@ -198,9 +221,9 @@ const bodyHTML = `<!-- CURSOR -->
   <div class="services-grid">
     <div class="service-card reveal">
       <span class="svc-index">01</span>
-      <div class="svc-title">Canapés & Catering</div>
+      <div class="svc-title">Canapés & Cocktail Catering</div>
       <p class="svc-desc">Gourmet canapé platters, brioche mini sliders, cocktail snack stations, themed buffet setups. Intimate gatherings to 500+ guest events. The service that built the Chowby Didi Haus name.</p>
-      <div class="svc-price">From ₦150,000</div>
+      <div class="svc-price">From ₦250,000</div>
       <span class="svc-arrow">↗</span>
     </div>
 
@@ -208,7 +231,7 @@ const bodyHTML = `<!-- CURSOR -->
       <span class="svc-index">02</span>
       <div class="svc-title">Private Dining</div>
       <p class="svc-desc">Curated 2–12 person dinner experiences. Bespoke menu design, live cooking, full table styling. Every detail — florals, linen, lighting, plating — is intentional and immaculate.</p>
-      <div class="svc-price">From ₦50,000</div>
+      <div class="svc-price">From ₦300,000</div>
       <span class="svc-arrow">↗</span>
     </div>
 
@@ -216,15 +239,15 @@ const bodyHTML = `<!-- CURSOR -->
       <span class="svc-index">03</span>
       <div class="svc-title">Event Setup & Tablescape</div>
       <p class="svc-desc">Full tablescape design — tiered risers, fresh fruit arrangements, floral styling, ambient lighting, branded menu cards. Standalone or bundled with catering. Weddings, corporate events, brand activations.</p>
-      <div class="svc-price">From ₦80,000</div>
+      <div class="svc-price">From ₦300,000</div>
       <span class="svc-arrow">↗</span>
     </div>
 
     <div class="service-card reveal" style="transition-delay:0.24s">
       <span class="svc-index">04</span>
-      <div class="svc-title">Luxury Gift Boxes</div>
+      <div class="svc-title">Celebration Boxes</div>
       <p class="svc-desc">Branded food hampers — clear-lid kraft boxes, organza ribbons, custom tags, signature canapés & bakes inside. Valentine's, Christmas, Eid, Corporate. Lagos delivery + international shipping.</p>
-      <div class="svc-price">From ₦15,000</div>
+      <div class="svc-price">From ₦80,000</div>
       <span class="svc-arrow">↗</span>
     </div>
 
@@ -398,7 +421,7 @@ const bodyHTML = `<!-- CURSOR -->
 <section id="gift-shop">
   <div class="section-header reveal">
     <div class="label">The Shop</div>
-    <h2 class="section-title">Luxury Gift Boxes</h2>
+    <h2 class="section-title">Celebration Boxes</h2>
     <div class="section-rule"></div>
   </div>
 
@@ -568,35 +591,39 @@ const bodyHTML = `<!-- CURSOR -->
     <div class="book-form">
       <div class="book-field">
         <label>Your Name</label>
-        <input type="text" placeholder="Full name"/>
+        <input data-field="name" type="text" placeholder="Full name"/>
       </div>
       <div class="book-field">
         <label>Phone / WhatsApp</label>
-        <input type="tel" placeholder="+234 or international"/>
+        <input data-field="phone" type="tel" placeholder="+234 or international"/>
+      </div>
+      <div class="book-field">
+        <label>Email</label>
+        <input data-field="email" type="email" placeholder="you@email.com — for your confirmation"/>
       </div>
       <div class="book-field">
         <label>Service</label>
-        <select>
+        <select data-field="service">
           <option value="">Select a service...</option>
-          <option>Canapés & Catering</option>
+          <option>Canapés & Cocktail Catering</option>
           <option>Private Dining</option>
           <option>Event Setup & Tablescape</option>
-          <option>Luxury Gift Boxes</option>
+          <option>Celebration Boxes</option>
           <option>Didi Academy — Course</option>
           <option>Chef Consulting</option>
         </select>
       </div>
       <div class="book-field">
         <label>Event Date</label>
-        <input type="date"/>
+        <input data-field="date" type="date"/>
       </div>
       <div class="book-field">
         <label>Guest Count</label>
-        <input type="text" placeholder="Approx. number of guests"/>
+        <input data-field="guests" type="text" placeholder="Approx. number of guests"/>
       </div>
       <div class="book-field">
         <label>Budget Range</label>
-        <select>
+        <select data-field="budget">
           <option value="">Select range...</option>
           <option>Under ₦100,000</option>
           <option>₦100,000 – ₦300,000</option>
@@ -607,21 +634,67 @@ const bodyHTML = `<!-- CURSOR -->
       </div>
       <div class="book-field book-full">
         <label>Additional Details</label>
-        <textarea rows="3" placeholder="Tell Didi about your event — theme, vision, anything special..."></textarea>
+        <textarea data-field="notes" rows="3" placeholder="Tell Didi about your event — theme, vision, anything special..."></textarea>
+      </div>
+      <!-- Honeypot: hidden from humans, bots fill it -->
+      <input data-field="company" type="text" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0;"/>
+      <!-- Request type: set to academy / voucher by the relevant CTAs -->
+      <input data-field="type" type="hidden" value="enquiry"/>
+      <div class="book-field book-full">
+        <div id="deposit-hint" style="padding:14px 16px;border:1px dashed rgba(255,255,255,0.3);border-radius:10px;color:rgba(255,255,255,0.8);font-size:14px;">Select a service to see the estimated 50% deposit to hold your date.</div>
       </div>
     </div>
 
     <button class="book-submit">Send Enquiry — Secure Your Date</button>
+    <a id="wa-book" href="#" target="_blank" rel="noopener" style="display:inline-block;margin-top:12px;color:#fff;text-decoration:none;border:1px solid rgba(255,255,255,0.35);padding:12px 22px;border-radius:8px;letter-spacing:1px;font-size:14px;">Or continue on WhatsApp →</a>
     <p class="book-note">Confirmation sent within 24 hours · Deposit required to hold date · All deposits non-refundable</p>
 
     <div class="payment-strip">
-      <span class="pay-badge">Paystack</span>
-      <span class="pay-badge">Stripe</span>
       <span class="pay-badge">Bank Transfer</span>
       <span class="pay-badge">WhatsApp</span>
     </div>
+
+    <!-- ── PAY BY TRANSFER + UPLOAD RECEIPT ── -->
+    <div id="pay" style="margin-top:48px;padding:32px;border:1px solid rgba(255,255,255,0.18);border-radius:14px;background:rgba(0,0,0,0.25);text-align:left;">
+      <div style="font-size:11px;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,0.55);margin-bottom:6px;">Secure Your Date</div>
+      <h3 style="font-style:italic;margin:0 0 6px;font-size:24px;">Pay by Bank Transfer</h3>
+      <p style="color:rgba(255,255,255,0.7);line-height:1.7;margin:0 0 20px;max-width:560px;">Send your deposit to the account below, then upload your receipt here. We'll verify and confirm your booking within 24 hours. (Card payment is coming soon.)</p>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:28px;">
+        <div style="padding:14px 16px;background:rgba(255,255,255,0.06);border-radius:10px;">
+          <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.45);">Bank</div>
+          <div style="font-size:16px;margin-top:4px;">${process.env.NEXT_PUBLIC_BANK_NAME || 'Providus Bank'}</div>
+        </div>
+        <div style="padding:14px 16px;background:rgba(255,255,255,0.06);border-radius:10px;">
+          <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.45);">Account Name</div>
+          <div style="font-size:16px;margin-top:4px;">${process.env.NEXT_PUBLIC_BANK_ACCOUNT_NAME || 'Chowby Didi Haus'}</div>
+        </div>
+        <div style="padding:14px 16px;background:rgba(255,255,255,0.06);border-radius:10px;">
+          <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.45);">Account Number</div>
+          <div style="font-size:16px;margin-top:4px;letter-spacing:1px;">${process.env.NEXT_PUBLIC_BANK_ACCOUNT_NUMBER || '0000000000'}</div>
+        </div>
+      </div>
+
+      <div id="receipt-form" style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+        <div class="book-field"><label>Your Name</label><input data-r="name" type="text" placeholder="Full name"/></div>
+        <div class="book-field"><label>Email</label><input data-r="email" type="email" placeholder="you@email.com"/></div>
+        <div class="book-field"><label>Booking Reference</label><input data-r="reference" type="text" placeholder="ENQ-… (optional)"/></div>
+        <div class="book-field"><label>Amount Paid</label><input data-r="amount" type="text" placeholder="e.g. ₦150,000"/></div>
+        <div class="book-field" style="grid-column:1/-1;"><label>Receipt (JPG, PNG or PDF · max 6MB)</label><input data-r="file" type="file" accept="image/png,image/jpeg,image/webp,application/pdf"/></div>
+        <input data-r="company" type="text" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0;"/>
+      </div>
+
+      <button class="book-submit" id="receipt-submit" style="margin-top:20px;">Upload Receipt</button>
+      <p class="book-note">Your booking is confirmed once we verify the transfer.</p>
+    </div>
   </div>
 </section>
+
+<!-- Floating WhatsApp button -->
+<a id="float-wa" href="#" target="_blank" rel="noopener" aria-label="Chat on WhatsApp"
+   style="position:fixed;right:22px;bottom:22px;z-index:9000;width:58px;height:58px;border-radius:50%;background:#25D366;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 24px rgba(0,0,0,0.25);text-decoration:none;">
+  <svg width="30" height="30" viewBox="0 0 32 32" fill="#fff" xmlns="http://www.w3.org/2000/svg"><path d="M16.04 4C9.93 4 4.98 8.95 4.98 15.06c0 1.96.51 3.86 1.49 5.55L4 28l7.6-2.42a11.02 11.02 0 0 0 4.44.93h.01c6.11 0 11.06-4.95 11.06-11.06C27.11 8.95 22.15 4 16.04 4zm0 20.2c-1.37 0-2.71-.37-3.88-1.06l-.28-.16-4.51 1.44 1.46-4.4-.18-.29a9.13 9.13 0 0 1-1.4-4.86c0-5.06 4.12-9.18 9.18-9.18 2.45 0 4.76.96 6.49 2.69a9.12 9.12 0 0 1 2.69 6.49c0 5.06-4.12 9.19-9.18 9.19zm5.04-6.88c-.28-.14-1.63-.8-1.89-.9-.25-.09-.43-.14-.62.14-.18.28-.71.9-.87 1.08-.16.18-.32.21-.6.07-.28-.14-1.17-.43-2.22-1.37-.82-.73-1.38-1.64-1.54-1.92-.16-.28-.02-.43.12-.57.12-.12.28-.32.42-.48.14-.16.18-.28.28-.46.09-.18.05-.35-.02-.49-.07-.14-.62-1.5-.85-2.05-.22-.54-.45-.47-.62-.48l-.53-.01c-.18 0-.48.07-.73.35-.25.28-.96.94-.96 2.3 0 1.36.99 2.67 1.13 2.85.14.18 1.95 2.98 4.73 4.18.66.29 1.18.46 1.58.59.66.21 1.27.18 1.74.11.53-.08 1.63-.67 1.86-1.31.23-.64.23-1.19.16-1.31-.07-.12-.25-.18-.53-.32z"/></svg>
+</a>
 
 <!-- ══════════════ FOOTER ══════════════ -->
 <footer>
@@ -633,18 +706,29 @@ const bodyHTML = `<!-- CURSOR -->
       <div class="footer-social">
         <a href="#" class="social-btn">IG</a>
         <a href="#" class="social-btn">TK</a>
-        <a href="#" class="social-btn">WA</a>
+        <a href="#" class="social-btn" id="footer-wa">WA</a>
         <a href="#" class="social-btn">YT</a>
+      </div>
+
+      <!-- Newsletter signup -->
+      <div id="newsletter" style="margin-top:28px;max-width:340px;">
+        <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.5);margin-bottom:10px;">Join the Haus list</div>
+        <div style="display:flex;gap:8px;">
+          <input id="nl-email" type="email" placeholder="you@email.com" style="flex:1;padding:11px 14px;border:1px solid rgba(255,255,255,0.2);border-radius:8px;background:rgba(255,255,255,0.06);color:#fff;font-family:inherit;"/>
+          <input id="nl-company" type="text" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0;"/>
+          <button id="nl-submit" style="padding:11px 18px;border:none;border-radius:8px;background:#e24b4a;color:#fff;cursor:pointer;font-family:inherit;letter-spacing:1px;">Join</button>
+        </div>
+        <p id="nl-msg" style="font-size:12px;color:rgba(255,255,255,0.55);margin-top:8px;">Recipes, drops & early access. No spam.</p>
       </div>
     </div>
 
     <div class="footer-col">
       <div class="footer-col-title">Services</div>
       <ul>
-        <li><a href="#services">Canapés & Catering</a></li>
+        <li><a href="#services">Canapés & Cocktail Catering</a></li>
         <li><a href="#private-dining">Private Dining</a></li>
         <li><a href="#services">Event Setup</a></li>
-        <li><a href="#gift-shop">Gift Boxes</a></li>
+        <li><a href="#gift-shop">Celebration Boxes</a></li>
         <li><a href="#academy">Didi Academy</a></li>
         <li><a href="#services">Chef Consulting</a></li>
       </ul>
@@ -666,11 +750,11 @@ const bodyHTML = `<!-- CURSOR -->
       <div class="footer-col-title">Contact</div>
       <ul>
         <li><a href="#book">Book an Experience</a></li>
-        <li><a href="#">WhatsApp Didi</a></li>
-        <li><a href="#">hello@chowbydidihaus.com</a></li>
+        <li><a href="#" id="footer-wa-link">WhatsApp Didi</a></li>
+        <li><a href="mailto:hello@chowbydidihaus.com">hello@chowbydidihaus.com</a></li>
         <li><a href="#">Lagos, Nigeria</a></li>
         <li><a href="#">Press & Media</a></li>
-        <li><a href="#">Gift Vouchers</a></li>
+        <li><a href="#book" data-cta="voucher">Gift Vouchers</a></li>
       </ul>
     </div>
   </div>
@@ -742,10 +826,8 @@ const bookForm = document.querySelector('.book-form')
 const bookSubmit = document.querySelector('.book-submit')
 if (bookSubmit) {
   bookSubmit.addEventListener('click', async () => {
-    const fields = bookForm ? bookForm.querySelectorAll('input,select,textarea') : []
     const data = {}
-    const labels = ['name','phone','service','date','guests','budget','notes']
-    fields.forEach((f, i) => { if (labels[i]) data[labels[i]] = f.value })
+    bookForm.querySelectorAll('[data-field]').forEach(f => { data[f.getAttribute('data-field')] = f.value })
 
     if (!data.name || !data.phone || !data.service) {
       bookSubmit.textContent = 'Please fill in Name, Phone & Service'
@@ -770,7 +852,7 @@ if (bookSubmit) {
       if (res.ok) {
         bookSubmit.textContent = \`✓ Received — Ref: \${json.id}\`
         bookSubmit.style.background = '#2d7a4f'
-        if (bookForm) bookForm.reset()
+        bookForm.querySelectorAll('[data-field]').forEach(f => { f.value = '' })
       } else {
         throw new Error(json.error)
       }
@@ -778,6 +860,175 @@ if (bookSubmit) {
       bookSubmit.textContent = 'Error — WhatsApp us directly'
       bookSubmit.style.background = '#c9a84c'
       bookSubmit.disabled = false
+    }
+  })
+
+  // ── DEPOSIT CALCULATOR (50% of the service "from" price)
+  const SERVICE_FROM = {
+    'Canapés & Cocktail Catering': 250000,
+    'Private Dining': 300000,
+    'Event Setup & Tablescape': 300000,
+    'Celebration Boxes': 80000,
+    'Didi Academy — Course': 5000,
+    'Chef Consulting': 25000,
+  }
+  const naira = (n) => '₦' + n.toLocaleString('en-NG')
+  const serviceSel = bookForm.querySelector('[data-field="service"]')
+  const depositHint = document.getElementById('deposit-hint')
+  if (serviceSel && depositHint) {
+    serviceSel.addEventListener('change', () => {
+      const from = SERVICE_FROM[serviceSel.value]
+      if (from) {
+        depositHint.innerHTML = \`<strong>\${serviceSel.value}</strong> starts from \${naira(from)}. Estimated 50% deposit to hold your date: <strong style="color:#fff;">\${naira(Math.round(from / 2))}</strong>. Final quote confirmed within 24 hours.\`
+      } else {
+        depositHint.textContent = 'Select a service to see the estimated 50% deposit to hold your date.'
+      }
+    })
+  }
+}
+
+// ── RECEIPT UPLOAD SUBMISSION
+const receiptForm = document.getElementById('receipt-form')
+const receiptSubmit = document.getElementById('receipt-submit')
+if (receiptSubmit && receiptForm) {
+  const readVal = (key) => {
+    const el = receiptForm.querySelector(\`[data-r="\${key}"]\`)
+    return el ? el.value : ''
+  }
+  const toBase64 = (file) => new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.onload = () => resolve(String(reader.result).split(',').pop())
+    reader.onerror = reject
+    reader.readAsDataURL(file)
+  })
+
+  receiptSubmit.addEventListener('click', async () => {
+    const fileEl = receiptForm.querySelector('[data-r="file"]')
+    const file = fileEl && fileEl.files && fileEl.files[0]
+    const name = readVal('name')
+
+    if (!name || !file) {
+      receiptSubmit.textContent = 'Add your name & a receipt file'
+      receiptSubmit.style.background = '#c9a84c'
+      setTimeout(() => { receiptSubmit.textContent = 'Upload Receipt'; receiptSubmit.style.background = '' }, 3000)
+      return
+    }
+    if (file.size > 6 * 1024 * 1024) {
+      receiptSubmit.textContent = 'File too large (max 6MB)'
+      receiptSubmit.style.background = '#c9a84c'
+      setTimeout(() => { receiptSubmit.textContent = 'Upload Receipt'; receiptSubmit.style.background = '' }, 3000)
+      return
+    }
+
+    receiptSubmit.textContent = 'Uploading...'
+    receiptSubmit.disabled = true
+    try {
+      const fileData = await toBase64(file)
+      const res = await fetch('/api/receipt', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name,
+          email: readVal('email'),
+          company: readVal('company'),
+          reference: readVal('reference'),
+          amount: readVal('amount'),
+          fileName: file.name,
+          fileType: file.type,
+          fileData,
+        })
+      })
+      const json = await res.json()
+      if (res.ok) {
+        receiptSubmit.textContent = \`✓ Received — Ref: \${json.id}\`
+        receiptSubmit.style.background = '#2d7a4f'
+        receiptForm.querySelectorAll('input').forEach(f => { f.value = '' })
+      } else {
+        throw new Error(json.error)
+      }
+    } catch (err) {
+      receiptSubmit.textContent = 'Error — WhatsApp us directly'
+      receiptSubmit.style.background = '#c9a84c'
+      receiptSubmit.disabled = false
+    }
+  })
+}
+
+// ── WHATSAPP CLICK-TO-CHAT (prefilled)
+const WA_NUMBER = '${(process.env.WHATSAPP_NUMBER || '').replace(/[^0-9]/g, '')}'
+const waLink = (msg) => WA_NUMBER ? \`https://wa.me/\${WA_NUMBER}?text=\${encodeURIComponent(msg)}\` : '#'
+const setWa = (el, msg) => { if (el && WA_NUMBER) el.setAttribute('href', waLink(msg)) }
+
+setWa(document.getElementById('footer-wa'), 'Hi Chowby Didi Haus! I have a question.')
+setWa(document.getElementById('footer-wa-link'), 'Hi Chowby Didi Haus! I have a question.')
+const floatWa = document.getElementById('float-wa')
+setWa(floatWa, 'Hi Chowby Didi Haus! I would like to enquire about your services.')
+if (floatWa && !WA_NUMBER) floatWa.style.display = 'none'
+
+// "Continue on WhatsApp" — sends the booking form details prefilled
+const waBook = document.getElementById('wa-book')
+if (waBook) {
+  setWa(waBook, 'Hi! I would like to book an experience.')
+  waBook.addEventListener('click', (ev) => {
+    if (!WA_NUMBER) return
+    const g = (k) => { const el = bookForm && bookForm.querySelector(\`[data-field="\${k}"]\`); return el ? el.value : '' }
+    const msg = \`Hi Chowby Didi Haus! I'd like to book:\\n• Name: \${g('name')}\\n• Service: \${g('service')}\\n• Date: \${g('date')}\\n• Guests: \${g('guests')}\\n• Budget: \${g('budget')}\\n• Notes: \${g('notes')}\`
+    waBook.setAttribute('href', waLink(msg))
+  })
+}
+
+// ── ACADEMY ENROLMENT — clicking a course routes to the booking form
+const bookType = bookForm && bookForm.querySelector('[data-field="type"]')
+const bookService = bookForm && bookForm.querySelector('[data-field="service"]')
+const bookNotes = bookForm && bookForm.querySelector('[data-field="notes"]')
+const goToBook = ({ type, service, notes }) => {
+  if (bookType) bookType.value = type || 'enquiry'
+  if (bookService && service) { bookService.value = service; bookService.dispatchEvent(new Event('change')) }
+  if (bookNotes && notes) bookNotes.value = notes
+  document.getElementById('book').scrollIntoView({ behavior: 'smooth' })
+}
+
+document.querySelectorAll('.course-item').forEach((item) => {
+  item.style.cursor = 'pointer'
+  item.addEventListener('click', () => {
+    const nameEl = item.querySelector('.course-name')
+    const priceEl = item.querySelector('.course-price')
+    goToBook({
+      type: 'academy',
+      service: 'Didi Academy — Course',
+      notes: \`Enrol: \${nameEl ? nameEl.textContent : 'Course'}\${priceEl ? ' (' + priceEl.textContent + ')' : ''}\`,
+    })
+  })
+})
+
+// ── GIFT VOUCHERS — footer link routes to booking with voucher type
+document.querySelectorAll('[data-cta="voucher"]').forEach((el) => {
+  el.addEventListener('click', (ev) => {
+    ev.preventDefault()
+    goToBook({ type: 'voucher', service: 'Celebration Boxes', notes: 'Gift voucher purchase' })
+  })
+})
+
+// ── NEWSLETTER SIGNUP
+const nlSubmit = document.getElementById('nl-submit')
+if (nlSubmit) {
+  nlSubmit.addEventListener('click', async () => {
+    const email = (document.getElementById('nl-email') || {}).value || ''
+    const company = (document.getElementById('nl-company') || {}).value || ''
+    const msg = document.getElementById('nl-msg')
+    if (!email || !email.includes('@')) { if (msg) msg.textContent = 'Please enter a valid email.'; return }
+    nlSubmit.textContent = '…'; nlSubmit.disabled = true
+    try {
+      const res = await fetch('/api/newsletter', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, company, source: 'footer' })
+      })
+      const json = await res.json()
+      if (res.ok) { if (msg) msg.textContent = json.message || 'Subscribed!'; document.getElementById('nl-email').value = ''; nlSubmit.textContent = '✓' }
+      else throw new Error(json.error)
+    } catch (err) {
+      if (msg) msg.textContent = 'Could not subscribe. Try again.'
+      nlSubmit.textContent = 'Join'; nlSubmit.disabled = false
     }
   })
 }
