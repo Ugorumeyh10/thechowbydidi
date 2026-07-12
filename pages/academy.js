@@ -1,6 +1,5 @@
 import Head from 'next/head'
-import Link from 'next/link'
-import Layout from '../components/Layout'
+import Layout, { waLink } from '../components/Layout'
 import { COURSES } from '../lib/content'
 
 export default function Academy() {
@@ -23,20 +22,21 @@ export default function Academy() {
           <div className="card section" style={{ padding: '6px 18px 18px' }}>
             <div className="menu-list">
               {COURSES.map((c) => (
-                <div className="menu-row" key={c.name}>
+                <a className="menu-row" key={c.name} href={waLink(`Hi Chowby Didi Haus! I'd like to enrol in "${c.name}" (${c.price}).`)} target="_blank" rel="noopener" style={{ cursor: 'pointer' }}>
                   <div>
                     <div className="menu-row__name">{c.name}</div>
                     <div className="menu-row__meta">{c.meta}</div>
                   </div>
                   <div className="menu-row__dots" />
                   <div className="menu-row__price">{c.price}</div>
-                </div>
+                </a>
               ))}
             </div>
           </div>
+          <p className="note center">Tap a course to enrol via WhatsApp.</p>
 
           <div className="center section">
-            <Link href="/book?type=academy&service=Didi%20Academy%20%E2%80%94%20Course" className="btn btn--auto">Enrol Now</Link>
+            <a href={waLink('Hi Chowby Didi Haus! I’d like to enrol in Didi Academy.')} target="_blank" rel="noopener" className="btn btn--wa btn--auto">Enrol on WhatsApp</a>
           </div>
         </div>
       </Layout>

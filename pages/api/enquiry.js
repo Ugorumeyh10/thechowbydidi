@@ -7,8 +7,8 @@ import { sendMail, emailConfigured } from '../../lib/mailer'
 import { notifyTeam } from '../../lib/notify'
 import { getClientIp, rateLimited, isBot } from '../../lib/security'
 
-// Give email time to send on a cold start without the request being killed.
-export const config = { maxDuration: 30 }
+// Give email time to send on a cold start, and allow an inspiration photo.
+export const config = { maxDuration: 30, api: { bodyParser: { sizeLimit: '8mb' } } }
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -32,8 +32,15 @@ export default async function handler(req, res) {
     date,
     guests,
     budget,
-    notes
+    notes,
+    inspirationData,
+    inspirationName,
   } = req.body
+
+  // Optional inspiration photo (base64) → emailed to Didi as an attachment.
+  const inspirationAttachment = inspirationData
+    ? [{ filename: inspirationName || 'inspiration.jpg', content: String(inspirationData).split(',').pop() }]
+    : undefined
 
   // Basic validation
   if (!name || !phone || !service) {
@@ -84,13 +91,14 @@ export default async function handler(req, res) {
               <tr><td style="padding:10px 0;border-bottom:1px solid #e8e4df;font-weight:600;">Event Date</td><td style="padding:10px 0;border-bottom:1px solid #e8e4df;">${enquiryData.date}</td></tr>
               <tr><td style="padding:10px 0;border-bottom:1px solid #e8e4df;font-weight:600;">Guest Count</td><td style="padding:10px 0;border-bottom:1px solid #e8e4df;">${enquiryData.guests}</td></tr>
               <tr><td style="padding:10px 0;border-bottom:1px solid #e8e4df;font-weight:600;">Budget</td><td style="padding:10px 0;border-bottom:1px solid #e8e4df;">${enquiryData.budget}</td></tr>
-              <tr><td style="padding:10px 0;font-weight:600;vertical-align:top;">Notes</td><td style="padding:10px 0;">${notes || '—'}</td></tr>
+              <tr><td style="padding:10px 0;font-weight:600;vertical-align:top;">Notes</td><td style="padding:10px 0;">${(notes || '—').replace(/\n/g, '<br>')}</td></tr>
             </table>
             <div style="margin-top:32px;padding:16px;background:#e24b4a;text-align:center;">
               <p style="color:white;font-size:12px;letter-spacing:2px;text-transform:uppercase;margin:0;">Reply within 24 hours to confirm availability</p>
             </div>
           </div>
-        `
+        `,
+        attachments: inspirationAttachment,
       })
 
       // Send confirmation to client — only if they gave us an email address.

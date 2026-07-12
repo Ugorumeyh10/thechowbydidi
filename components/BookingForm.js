@@ -1,15 +1,21 @@
 import { useState, useMemo } from 'react'
-import { SERVICE_OPTIONS, SERVICE_FROM, naira, COLOR_THEMES, FLOWERS, ACCESSORIES, LIGHTING } from '../lib/content'
+import { SERVICE_OPTIONS, SERVICE_FROM, naira, COLOR_THEMES, FLOWERS, ACCESSORIES, LIGHTING, VENUES, PRESETS } from '../lib/content'
 import { waLink } from './Layout'
 
 const BUDGETS = ['Under ₦100,000', '₦100,000 – ₦300,000', '₦300,000 – ₦600,000', '₦600,000 – ₦1,000,000', '₦1,000,000+']
+const EMPTY_STYLE = { theme: '', venue: [], flowers: [], accessories: [], lighting: [] }
+
+const toBase64 = (file) => new Promise((res, rej) => {
+  const r = new FileReader(); r.onload = () => res(String(r.result).split(',').pop()); r.onerror = rej; r.readAsDataURL(file)
+})
 
 export default function BookingForm({ initialService = '', initialType = 'enquiry' }) {
   const [f, setF] = useState({
     name: '', phone: '', email: '', service: initialService, date: '',
     guests: '', budget: '', notes: '', company: '', type: initialType,
   })
-  const [style, setStyle] = useState({ theme: '', flowers: [], accessories: [], lighting: [] })
+  const [style, setStyle] = useState(EMPTY_STYLE)
+  const [inspiration, setInspiration] = useState(null) // File
   const [status, setStatus] = useState({ state: 'idle', msg: '' })
   const [sent, setSent] = useState(null) // { id, wa } after a successful booking
   const set = (k) => (e) => setF((s) => ({ ...s, [k]: e.target.value }))
@@ -19,6 +25,10 @@ export default function BookingForm({ initialService = '', initialType = 'enquir
     ...s, [group]: s[group].includes(val) ? s[group].filter((v) => v !== val) : [...s[group], val],
   }))
   const pickTheme = (name) => setStyle((s) => ({ ...s, theme: s.theme === name ? '' : name }))
+  const applyPreset = (p) => setStyle({
+    theme: p.theme, venue: p.venue || [], flowers: p.flowers || [],
+    accessories: p.accessories || [], lighting: p.lighting || [],
+  })
 
   const deposit = useMemo(() => {
     const from = SERVICE_FROM[f.service]
@@ -28,6 +38,7 @@ export default function BookingForm({ initialService = '', initialType = 'enquir
   // Compile the chosen decor into a readable summary line.
   const styleSummary = () => {
     const parts = []
+    if (style.venue.length) parts.push(`Setting: ${style.venue.join(', ')}`)
     if (style.theme) parts.push(`Theme: ${style.theme}`)
     if (style.flowers.length) parts.push(`Flowers: ${style.flowers.join(', ')}`)
     if (style.accessories.length) parts.push(`Decor: ${style.accessories.join(', ')}`)
@@ -36,7 +47,8 @@ export default function BookingForm({ initialService = '', initialType = 'enquir
   }
   const composedNotes = () => {
     const s = styleSummary()
-    return [f.notes, s && `Styling — ${s}`].filter(Boolean).join('\n')
+    return [f.notes, s && `Styling — ${s}`, inspiration && '📎 Inspiration photo attached']
+      .filter(Boolean).join('\n')
   }
 
   // Build the WhatsApp message from a data object (+ optional reference)
@@ -51,10 +63,18 @@ export default function BookingForm({ initialService = '', initialType = 'enquir
     if (!f.name || !f.phone || !f.service) {
       setStatus({ state: 'err', msg: 'Please fill in Name, Phone & Service.' }); return
     }
+    if (inspiration && inspiration.size > 6 * 1024 * 1024) {
+      setStatus({ state: 'err', msg: 'Inspiration photo is too large (max 6MB).' }); return
+    }
     setStatus({ state: 'loading', msg: 'Sending…' })
     const payload = { ...f, notes: composedNotes() }
     const snapshot = { ...payload }
     try {
+      if (inspiration) {
+        payload.inspirationData = await toBase64(inspiration)
+        payload.inspirationName = inspiration.name
+        payload.inspirationType = inspiration.type
+      }
       const res = await fetch('/api/enquiry', {
         method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload),
       })
@@ -64,7 +84,7 @@ export default function BookingForm({ initialService = '', initialType = 'enquir
       setSent({ id: j.id, wa })
       setStatus({ state: 'ok', msg: '' })
       setF((s) => ({ ...s, name: '', phone: '', email: '', date: '', guests: '', budget: '', notes: '' }))
-      setStyle({ theme: '', flowers: [], accessories: [], lighting: [] })
+      setStyle(EMPTY_STYLE); setInspiration(null)
       // Best-effort: pop WhatsApp open so the details land with Didi in one tap.
       try { window.open(wa, '_blank') } catch {}
     } catch (e) {
@@ -112,6 +132,24 @@ export default function BookingForm({ initialService = '', initialType = 'enquir
         </div>
 
         <div className="styler__group">
+          <div className="styler__label"><span className="dot" /> Quick Looks — one tap</div>
+          <div className="pills">
+            {PRESETS.map((p) => (
+              <button type="button" key={p.name} className="pill" onClick={() => applyPreset(p)}>✨ {p.name}</button>
+            ))}
+          </div>
+        </div>
+
+        <div className="styler__group">
+          <div className="styler__label"><span className="dot" /> Setting</div>
+          <div className="pills">
+            {VENUES.map((v) => (
+              <button type="button" key={v} className={`pill ${style.venue.includes(v) ? 'on' : ''}`} onClick={() => toggle('venue', v)}>{v}</button>
+            ))}
+          </div>
+        </div>
+
+        <div className="styler__group">
           <div className="styler__label"><span className="dot" /> Colour Theme</div>
           <div className="swatches">
             {COLOR_THEMES.map((t) => (
@@ -149,6 +187,12 @@ export default function BookingForm({ initialService = '', initialType = 'enquir
               <button type="button" key={v} className={`pill ${style.lighting.includes(v) ? 'on' : ''}`} onClick={() => toggle('lighting', v)}>{v}</button>
             ))}
           </div>
+        </div>
+
+        <div className="styler__group">
+          <div className="styler__label"><span className="dot" /> Inspiration Photo</div>
+          <input type="file" accept="image/png,image/jpeg,image/webp" onChange={(e) => setInspiration(e.target.files?.[0] || null)} />
+          {inspiration && <p className="note" style={{ marginTop: 6 }}>📎 {inspiration.name} — we’ll style around it.</p>}
         </div>
 
         {styleSummary() && (
