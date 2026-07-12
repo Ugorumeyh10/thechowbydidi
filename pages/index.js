@@ -12,7 +12,7 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
         <meta property="og:title" content="Chowby Didi Haus" />
         <meta property="og:description" content="Made to Hit Different. Luxury canapés, private dining & event setups — Lagos to the world." />
-        <meta property="og:image" content="/media/video1_poster.jpg" />
+        <meta property="og:image" content="/media/jollof_finished.jpg" />
         <meta name="theme-color" content="#f7f4f0" />
         <link rel="icon" href="/favicon.ico" />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
@@ -29,7 +29,7 @@ export default function Home() {
         <div className="page">
           {/* Hero */}
           <section className="hero">
-            <video className="hero__media" src="/media/video1.mp4" poster="/media/video1_poster.jpg" autoPlay muted loop playsInline />
+            <img className="hero__media" src="/media/jollof_finished.jpg" alt="Chowby Didi Haus signature smoky jollof rice" />
             <div className="hero__overlay">
               <div className="eyebrow">Lagos · Luxury Catering</div>
               <h1 className="hero__title">Made to<br />Hit Different</h1>
