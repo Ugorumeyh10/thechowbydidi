@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react'
-import { SERVICE_OPTIONS, SERVICE_FROM, naira } from '../lib/content'
+import { SERVICE_OPTIONS, SERVICE_FROM, naira, COLOR_THEMES, FLOWERS, ACCESSORIES, LIGHTING } from '../lib/content'
 import { waLink } from './Layout'
 
 const BUDGETS = ['Under ₦100,000', '₦100,000 – ₦300,000', '₦300,000 – ₦600,000', '₦600,000 – ₦1,000,000', '₦1,000,000+']
@@ -9,14 +9,35 @@ export default function BookingForm({ initialService = '', initialType = 'enquir
     name: '', phone: '', email: '', service: initialService, date: '',
     guests: '', budget: '', notes: '', company: '', type: initialType,
   })
+  const [style, setStyle] = useState({ theme: '', flowers: [], accessories: [], lighting: [] })
   const [status, setStatus] = useState({ state: 'idle', msg: '' })
   const [sent, setSent] = useState(null) // { id, wa } after a successful booking
   const set = (k) => (e) => setF((s) => ({ ...s, [k]: e.target.value }))
+
+  // toggle a value in one of the multi-select style arrays
+  const toggle = (group, val) => setStyle((s) => ({
+    ...s, [group]: s[group].includes(val) ? s[group].filter((v) => v !== val) : [...s[group], val],
+  }))
+  const pickTheme = (name) => setStyle((s) => ({ ...s, theme: s.theme === name ? '' : name }))
 
   const deposit = useMemo(() => {
     const from = SERVICE_FROM[f.service]
     return from ? { from, dep: Math.round(from / 2) } : null
   }, [f.service])
+
+  // Compile the chosen decor into a readable summary line.
+  const styleSummary = () => {
+    const parts = []
+    if (style.theme) parts.push(`Theme: ${style.theme}`)
+    if (style.flowers.length) parts.push(`Flowers: ${style.flowers.join(', ')}`)
+    if (style.accessories.length) parts.push(`Decor: ${style.accessories.join(', ')}`)
+    if (style.lighting.length) parts.push(`Lighting: ${style.lighting.join(', ')}`)
+    return parts.join('  •  ')
+  }
+  const composedNotes = () => {
+    const s = styleSummary()
+    return [f.notes, s && `Styling — ${s}`].filter(Boolean).join('\n')
+  }
 
   // Build the WhatsApp message from a data object (+ optional reference)
   const buildWaMsg = (d, ref) =>
@@ -31,10 +52,11 @@ export default function BookingForm({ initialService = '', initialType = 'enquir
       setStatus({ state: 'err', msg: 'Please fill in Name, Phone & Service.' }); return
     }
     setStatus({ state: 'loading', msg: 'Sending…' })
-    const snapshot = { ...f }
+    const payload = { ...f, notes: composedNotes() }
+    const snapshot = { ...payload }
     try {
       const res = await fetch('/api/enquiry', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(f),
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload),
       })
       const j = await res.json()
       if (!res.ok) throw new Error(j.error || 'Failed')
@@ -42,6 +64,7 @@ export default function BookingForm({ initialService = '', initialType = 'enquir
       setSent({ id: j.id, wa })
       setStatus({ state: 'ok', msg: '' })
       setF((s) => ({ ...s, name: '', phone: '', email: '', date: '', guests: '', budget: '', notes: '' }))
+      setStyle({ theme: '', flowers: [], accessories: [], lighting: [] })
       // Best-effort: pop WhatsApp open so the details land with Didi in one tap.
       try { window.open(wa, '_blank') } catch {}
     } catch (e) {
@@ -51,7 +74,7 @@ export default function BookingForm({ initialService = '', initialType = 'enquir
     }
   }
 
-  const waMessage = buildWaMsg(f)
+  const waMessage = buildWaMsg({ ...f, notes: composedNotes() })
 
   return (
     <div className="card" style={{ padding: 20 }}>
@@ -79,6 +102,60 @@ export default function BookingForm({ initialService = '', initialType = 'enquir
         </select>
       </div>
       <div className="field"><label>Additional Details</label><textarea rows={3} value={f.notes} onChange={set('notes')} placeholder="Theme, vision, anything special…" /></div>
+
+      {/* ── Style your event (interactive) ── */}
+      <div className="styler">
+        <div style={{ margin: '4px 0 14px' }}>
+          <div className="eyebrow">Optional</div>
+          <div className="app-serif" style={{ fontSize: 20 }}>Style Your Event</div>
+          <p className="note" style={{ marginTop: 4 }}>Pick a vibe and we’ll bring it to life — or leave it to Chef Blessing.</p>
+        </div>
+
+        <div className="styler__group">
+          <div className="styler__label"><span className="dot" /> Colour Theme</div>
+          <div className="swatches">
+            {COLOR_THEMES.map((t) => (
+              <button type="button" key={t.name} className={`swatch ${style.theme === t.name ? 'on' : ''}`} onClick={() => pickTheme(t.name)}>
+                <span className="swatch__check">✓</span>
+                <span className="swatch__colors">{t.colors.map((c, i) => <span key={i} style={{ background: c }} />)}</span>
+                <span className="swatch__name">{t.name}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="styler__group">
+          <div className="styler__label"><span className="dot" /> Flowers</div>
+          <div className="pills">
+            {FLOWERS.map((v) => (
+              <button type="button" key={v} className={`pill ${style.flowers.includes(v) ? 'on' : ''}`} onClick={() => toggle('flowers', v)}>{v}</button>
+            ))}
+          </div>
+        </div>
+
+        <div className="styler__group">
+          <div className="styler__label"><span className="dot" /> Decor & Accessories</div>
+          <div className="pills">
+            {ACCESSORIES.map((v) => (
+              <button type="button" key={v} className={`pill ${style.accessories.includes(v) ? 'on' : ''}`} onClick={() => toggle('accessories', v)}>{v}</button>
+            ))}
+          </div>
+        </div>
+
+        <div className="styler__group">
+          <div className="styler__label"><span className="dot" /> Lighting</div>
+          <div className="pills">
+            {LIGHTING.map((v) => (
+              <button type="button" key={v} className={`pill ${style.lighting.includes(v) ? 'on' : ''}`} onClick={() => toggle('lighting', v)}>{v}</button>
+            ))}
+          </div>
+        </div>
+
+        {styleSummary() && (
+          <div className="styler__summary"><b>Your styling:</b> {styleSummary()}</div>
+        )}
+      </div>
+
       <input className="hp" tabIndex={-1} autoComplete="off" aria-hidden value={f.company} onChange={set('company')} />
 
       {deposit && (
