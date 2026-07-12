@@ -10,6 +10,7 @@ import { getClientIp, rateLimited, isBot, detectFileType } from '../../lib/secur
 // Receipts (photos/PDFs) can exceed Next's default 1mb body limit.
 export const config = {
   api: { bodyParser: { sizeLimit: '8mb' } },
+  maxDuration: 30,
 }
 
 const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'application/pdf']
@@ -66,6 +67,8 @@ export default async function handler(req, res) {
     // ── Alert the team (Slack / WhatsApp Cloud API — no-op if unconfigured)
     notifyTeam(`💸 New payment receipt — ${name}${amount ? ' · ' + amount : ''}${reference ? ' · ref ' + reference : ''} (${receipt.id})`)
 
+    // Email is best-effort — must NEVER fail the receipt upload.
+    try {
     if (emailConfigured()) {
       // Notify Didi with the receipt attached
       await sendMail({
@@ -105,6 +108,9 @@ export default async function handler(req, res) {
           `,
         })
       }
+    }
+    } catch (mailErr) {
+      console.error('Email send failed (receipt was saved):', mailErr)
     }
 
     return res.status(200).json({

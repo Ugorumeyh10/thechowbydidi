@@ -7,6 +7,9 @@ import { sendMail, emailConfigured } from '../../lib/mailer'
 import { notifyTeam } from '../../lib/notify'
 import { getClientIp, rateLimited, isBot } from '../../lib/security'
 
+// Give email time to send on a cold start without the request being killed.
+export const config = { maxDuration: 30 }
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' })
@@ -62,7 +65,8 @@ export default async function handler(req, res) {
     // ── Alert the team (Slack / WhatsApp Cloud API — no-op if unconfigured)
     notifyTeam(`🍽️ New ${kind} — ${name} · ${service} · ${phone}${email ? ' · ' + email : ''} (ref ${enquiryData.id})`)
 
-    // ── Email notifications (Gmail SMTP or Resend — no-op if neither set)
+    // ── Email notifications (best-effort — must NEVER fail the booking)
+    try {
     if (emailConfigured()) {
       // Notify Didi
       await sendMail({
@@ -108,6 +112,9 @@ export default async function handler(req, res) {
         `
       })
       }
+    }
+    } catch (mailErr) {
+      console.error('Email send failed (enquiry was saved):', mailErr)
     }
 
     return res.status(200).json({
