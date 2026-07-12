@@ -10,6 +10,7 @@ export default function BookingForm({ initialService = '', initialType = 'enquir
     guests: '', budget: '', notes: '', company: '', type: initialType,
   })
   const [status, setStatus] = useState({ state: 'idle', msg: '' })
+  const [sent, setSent] = useState(null) // { id, wa } after a successful booking
   const set = (k) => (e) => setF((s) => ({ ...s, [k]: e.target.value }))
 
   const deposit = useMemo(() => {
@@ -17,26 +18,40 @@ export default function BookingForm({ initialService = '', initialType = 'enquir
     return from ? { from, dep: Math.round(from / 2) } : null
   }, [f.service])
 
+  // Build the WhatsApp message from a data object (+ optional reference)
+  const buildWaMsg = (d, ref) =>
+    `Hi Chowby Didi Haus! I'd like to book:\n` +
+    (ref ? `• Ref: ${ref}\n` : '') +
+    `• Name: ${d.name}\n• Phone: ${d.phone}\n• Email: ${d.email || '—'}\n` +
+    `• Service: ${d.service}\n• Date: ${d.date || '—'}\n• Guests: ${d.guests || '—'}\n` +
+    `• Budget: ${d.budget || '—'}\n• Notes: ${d.notes || '—'}`
+
   const submit = async () => {
     if (!f.name || !f.phone || !f.service) {
       setStatus({ state: 'err', msg: 'Please fill in Name, Phone & Service.' }); return
     }
     setStatus({ state: 'loading', msg: 'Sending…' })
+    const snapshot = { ...f }
     try {
       const res = await fetch('/api/enquiry', {
         method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(f),
       })
       const j = await res.json()
       if (!res.ok) throw new Error(j.error || 'Failed')
-      setStatus({ state: 'ok', msg: `✓ Received — your reference is ${j.id}. We’ll reply within 24 hours.` })
+      const wa = waLink(buildWaMsg(snapshot, j.id))
+      setSent({ id: j.id, wa })
+      setStatus({ state: 'ok', msg: '' })
       setF((s) => ({ ...s, name: '', phone: '', email: '', date: '', guests: '', budget: '', notes: '' }))
+      // Best-effort: pop WhatsApp open so the details land with Didi in one tap.
+      try { window.open(wa, '_blank') } catch {}
     } catch (e) {
-      setStatus({ state: 'err', msg: 'Something went wrong — please WhatsApp us directly.' })
+      // Even if saving hiccuped, let them send via WhatsApp so nothing is lost.
+      setSent({ id: null, wa: waLink(buildWaMsg(snapshot)) })
+      setStatus({ state: 'err', msg: 'We couldn’t reach the server — please send your details on WhatsApp below.' })
     }
   }
 
-  const waMessage =
-    `Hi Chowby Didi Haus! I'd like to book:\n• Name: ${f.name}\n• Service: ${f.service}\n• Date: ${f.date}\n• Guests: ${f.guests}\n• Budget: ${f.budget}\n• Notes: ${f.notes}`
+  const waMessage = buildWaMsg(f)
 
   return (
     <div className="card" style={{ padding: 20 }}>
@@ -73,13 +88,28 @@ export default function BookingForm({ initialService = '', initialType = 'enquir
         </div>
       )}
 
-      <button className="btn" onClick={submit} disabled={status.state === 'loading'}>
-        {status.state === 'loading' ? 'Sending…' : 'Send Enquiry — Secure Your Date'}
-      </button>
-      <a className="btn btn--wa" style={{ marginTop: 10 }} href={waLink(waMessage)} target="_blank" rel="noopener">Or continue on WhatsApp →</a>
-
-      {status.msg && <p className={`note ${status.state === 'ok' ? 'msg-ok' : status.state === 'err' ? 'msg-err' : ''}`}>{status.msg}</p>}
-      <p className="note">Confirmation within 24 hours · Deposit required to hold date · All deposits non-refundable</p>
+      {sent ? (
+        <div style={{ background: 'var(--cream)', border: '1px solid var(--line)', borderRadius: 14, padding: 18, textAlign: 'center' }}>
+          {sent.id
+            ? <p className="msg-ok" style={{ margin: '0 0 4px', fontWeight: 600 }}>✓ Received — your reference is {sent.id}</p>
+            : <p className="msg-err" style={{ margin: '0 0 4px', fontWeight: 600 }}>Couldn’t reach the server</p>}
+          <p className="note" style={{ marginTop: 0 }}>
+            {sent.id ? 'We’ll reply within 24 hours. Tap below to also send your details to us on WhatsApp.'
+                     : 'Send your details straight to us on WhatsApp so we don’t miss your booking.'}
+          </p>
+          <a className="btn btn--wa" href={sent.wa} target="_blank" rel="noopener">📲 Send my booking on WhatsApp</a>
+          <button className="btn btn--ghost" style={{ marginTop: 10 }} onClick={() => { setSent(null); setStatus({ state: 'idle', msg: '' }) }}>Make another booking</button>
+        </div>
+      ) : (
+        <>
+          <button className="btn" onClick={submit} disabled={status.state === 'loading'}>
+            {status.state === 'loading' ? 'Sending…' : 'Send Enquiry — Secure Your Date'}
+          </button>
+          <a className="btn btn--wa" style={{ marginTop: 10 }} href={waLink(waMessage)} target="_blank" rel="noopener">Or continue on WhatsApp →</a>
+          {status.msg && <p className={`note ${status.state === 'err' ? 'msg-err' : ''}`}>{status.msg}</p>}
+          <p className="note">Confirmation within 24 hours · Deposit required to hold date · All deposits non-refundable</p>
+        </>
+      )}
     </div>
   )
 }
