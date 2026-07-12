@@ -42,7 +42,7 @@ export default function About() {
               <p className="quote">“If it doesn’t look like art and taste even better, it doesn’t leave my kitchen.”</p>
               <p className="lead">
                 From a single canapé platter to fully styled 500-guest tablescapes, Blessing built Chowby Didi Haus on
-                one promise: food <em>made to hit different</em> — unforgettable to look at, impossible to forget to taste.
+                one promise: food <em>made to hit different</em> — as unforgettable on the palate as it is to the eye.
               </p>
             </div>
           </section>
