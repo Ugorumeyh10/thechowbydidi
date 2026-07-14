@@ -24,7 +24,7 @@ export default function Services() {
           <section className="section">
             <div className="hero" style={{ borderRadius: 22 }}>
               <video className="hero__media" style={{ height: 'clamp(300px, 52vh, 460px)' }}
-                src="/media/video6.mp4" poster="/media/video6_poster.jpg" autoPlay muted loop playsInline preload="metadata" />
+                src="/media/video7.mp4" poster="/media/video7_poster.jpg" autoPlay muted loop playsInline preload="metadata" />
               <div className="hero__overlay">
                 <div className="eyebrow">Tablescape Styling</div>
                 <h2 className="hero__title" style={{ fontSize: 'clamp(26px, 6vw, 42px)' }}>Styled to hit different</h2>
